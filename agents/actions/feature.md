@@ -223,6 +223,15 @@ Mandatory preflight before implementation validation runs:
 - [ ] Story changes files under `{PRODUCT_ROOT}/neuron/`
 - [ ] Story requires model selection, cost controls, or guardrails
 
+**Data Scope Checklist — include Data Engineer if ANY apply:**
+- [ ] Story requires new tables, schema changes, column additions, or index changes
+- [ ] Story requires ETL/ELT pipeline creation or modification
+- [ ] Story introduces or modifies cross-service data contracts
+- [ ] Story involves reporting, analytics, or data warehouse output
+- [ ] Story requires AI/ML training data preparation or feature store feeds
+- [ ] Story involves event sourcing or CQRS data patterns
+- [ ] Story requires bulk data import or export
+
 #### 1a. Backend Developer (Feature Scope)
 1. **Activate Backend Developer agent** by reading `agents/backend-developer/SKILL.md`
 2. **Read context:**
@@ -347,8 +356,35 @@ Mandatory preflight before implementation validation runs:
    - Updated env var documentation for new feature requirements
    - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/STATUS.md` updates (deployability evidence, Cross-Cutting checklist items)
 
+#### 1f. Data Engineer (Feature Scope, if data scope)
+1. **Activate Data Engineer agent** by reading `agents/data-engineer/SKILL.md`
+2. **Read context:**
+   - `{PRODUCT_ROOT}/planning-mds/BLUEPRINT.md` Section 4 (data model, tech stack for this feature)
+   - `{PRODUCT_ROOT}/planning-mds/architecture/data-model.md`
+   - `{PRODUCT_ROOT}/planning-mds/architecture/SOLUTION-PATTERNS.md`
+   - User stories for THIS FEATURE with data scope
+3. **Execute responsibilities (feature-scoped):**
+   - Implement schema changes and migration files for this feature
+   - Define and version data contracts introduced by this feature
+   - Implement pipeline steps required by this feature (idempotent, re-runnable)
+   - Implement data quality rules per feature acceptance criteria
+   - Write seed scripts and test data factories for this feature
+4. **Follow SOLUTION-PATTERNS.md:**
+   - Every migration must apply idempotently; never edit an applied migration
+   - Every pipeline step must be re-runnable without producing duplicates
+   - Breaking contract changes require versioning and architect approval
+   - No hardcoded credentials or connection strings
+5. **Outputs (feature-specific):**
+   - Migration files for this feature
+   - Schema contracts introduced by this feature in `{PRODUCT_ROOT}/planning-mds/schemas/`
+   - Pipeline definitions for this feature
+   - Seed scripts and test data factories
+   - Data quality rule implementations
+   - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/STATUS.md` updates (Data Progress section, validation evidence paths)
+   - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/GETTING-STARTED.md` updates (key data files, seed/run verification steps)
+
 **Completion Criteria for Step 1:**
-- [ ] All required agents completed feature implementation (Backend, Frontend, Quality, DevOps, and AI Engineer if AI scope)
+- [ ] All required agents completed feature implementation (Backend, Frontend, Quality, DevOps, AI Engineer if AI scope, and Data Engineer if data scope)
 - [ ] Feature code compiles/builds successfully in application runtime containers
 - [ ] Runtime preflight evidence recorded before validation command execution
 - [ ] No critical errors
@@ -402,6 +438,18 @@ Before self-review checks:
    - [ ] Runtime config/env-var changes documented and versioned
    - [ ] No runtime orchestration regressions introduced by the feature
 
+6. **Data Engineer self-review (if data scope):**
+   - [ ] Feature schemas match architecture data model (field names, types, constraints)
+   - [ ] Feature migration applies idempotently against a clean baseline
+   - [ ] Pipeline steps for this feature are idempotent and re-runnable
+   - [ ] Data contracts versioned; breaking changes flagged and architect-approved
+   - [ ] Data quality rules for this feature implemented and tested
+   - [ ] Lineage metadata captured for feature pipeline runs
+   - [ ] Seed scripts re-run safely without creating duplicates
+   - [ ] Pipeline unit tests passing for this feature
+   - [ ] No hardcoded credentials or connection strings
+   - [ ] code-index.yaml bindings added for new data files introduced by this feature
+
 **If any self-review fails:**
 - Agent fixes issues
 - Re-runs self-review
@@ -413,6 +461,7 @@ Before self-review checks:
 - [ ] All feature tests passing in application runtime containers
 - [ ] Runtime preflight evidence attached for failed and passing validation runs
 - [ ] Feature deployability evidence recorded by DevOps
+- [ ] Data Engineer self-review passes when data scope exists (migrations idempotent, contracts versioned, pipelines re-runnable)
 - [ ] Feature works end-to-end
 
 ---
@@ -795,6 +844,12 @@ Implementation:
     - [count] AI workflows/prompts delivered
     - [count] AI tests passing
 
+  ✓ Data Engineer (if data scope)
+    - [count] migrations generated and validated
+    - [count] data contracts defined/versioned
+    - [count] pipeline steps implemented
+    - Pipeline unit tests passing
+
 Code Review:
   ✓ Code Reviewer: APPROVED
   ✓ Vertical slice complete
@@ -836,9 +891,10 @@ Feature delivered! ✓
 
 **Overall Feature Action Success:**
 - [ ] Feature assembly plan created and followed
-- [ ] Feature is complete vertical slice (backend + frontend + tests + DevOps deployability checks + AI when in scope)
+- [ ] Feature is complete vertical slice (backend + frontend + tests + DevOps deployability checks + AI when in scope + data layer when data scope exists)
 - [ ] All feature tests passing in application runtime containers
 - [ ] AI tests passing (if AI scope) in AI runtime container
+- [ ] Data pipeline unit tests passing and migrations validated (if data scope)
 - [ ] Code review approved
 - [ ] Security review approved
 - [ ] Signoff gate passed for all required reviewer roles

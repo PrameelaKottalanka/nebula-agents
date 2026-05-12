@@ -473,6 +473,7 @@ Before Phase A approval, synchronize and validate planning trackers:
    - Validate Phase A deliverables for technical feasibility
    - Define service/module boundaries
    - Design data model (entities, relationships, key attributes)
+   - For stories involving database schema changes, data pipelines, or cross-service data contracts: share the draft data model with the **Data Engineer** before Phase B approval to surface data-layer feasibility concerns (migration complexity, contract versioning, pipeline scheduling) early
    - Create API contracts (endpoints, request/response schemas)
    - Define authorization model (roles, resources, actions, policies)
    - Specify workflow state machines and business rules
@@ -520,6 +521,7 @@ Before Phase A approval, synchronize and validate planning trackers:
 - `{PRODUCT_ROOT}/planning-mds/api/*.yaml` (OpenAPI contracts)
 - `{PRODUCT_ROOT}/planning-mds/knowledge-graph/feature-mappings.yaml` (completed feature/story bindings)
 - `{PRODUCT_ROOT}/planning-mds/knowledge-graph/canonical-nodes.yaml` (when new shared semantics were introduced)
+- Data Engineer feasibility sign-off noted in ADR or STATUS.md when data scope exists (schema changes, pipelines, cross-service data contracts)
 
 ---
 

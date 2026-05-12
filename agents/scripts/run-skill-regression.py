@@ -80,6 +80,7 @@ SKILL_HINTS: Dict[str, List[str]] = {
     "backend-developer": ["backend", "endpoint", "api", "migration", "entity", "repository", "dotnet"],
     "frontend-developer": ["frontend", "react", "screen", "form", "component", "ui", "typescript"],
     "ai-engineer": ["llm", "prompt", "mcp", "agent", "workflow", "model", "inference"],
+    "data-engineer": ["etl", "pipeline", "schema", "migration", "ingestion", "contract", "analytics", "versioned", "consumer", "lineage", "quality"],
     "quality-engineer": ["test", "tests", "coverage", "e2e", "performance", "regression"],
     "devops": ["docker", "compose", "deploy", "deployment", "infrastructure", "pipeline", "cicd", "monitoring"],
     "code-reviewer": ["review", "pull", "request", "code", "quality", "maintainability", "pr"],

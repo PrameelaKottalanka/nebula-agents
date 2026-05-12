@@ -30,6 +30,39 @@ stages:
     required_gates:
       - boundary_genericness
       - skill_regression
+agents:
+  data-engineer:
+    phase: implementation
+    description: >
+      Implements data pipelines, schemas, migrations, and data contracts.
+      Active when stories involve database schema changes, ETL/ELT pipeline work,
+      cross-service data contracts, analytics requirements, AI/ML training data
+      preparation, event sourcing patterns, or bulk data import/export.
+    entry_conditions:
+      - BLUEPRINT.md Section 4.x complete with data model and tech stack declared
+      - Data model documented with ERD in planning-mds/architecture/data-model.md
+      - Data contracts agreed between producers and consumers (when contract scope)
+      - Pipeline acceptance criteria defined in story acceptance criteria
+      - Migration baseline established and healthy (when schema scope)
+    exit_conditions:
+      - All migrations generated, sequenced, and validated for idempotency
+      - Data contracts defined and versioned in planning-mds/schemas/ for all cross-service interfaces
+      - All pipeline steps are idempotent and re-runnable
+      - Data quality validation rules implemented and tested
+      - Lineage metadata captured for all pipeline runs
+      - Seed scripts idempotent and verified on repeated runs
+      - code-index.yaml bindings added for all new data files
+      - scripts/kg/validate.py exits 0
+    required_gates:
+      - data_contract_validation
+      - data_pipeline_validation
+    failure_behaviour: >
+      Block feature or build closeout. Route back to data-engineer for remediation.
+      Do not proceed to code review until all exit conditions are met.
+      If migration baseline is corrupted, halt and escalate to architect before
+      any further migration work. If a data contract cannot be agreed within
+      feature scope, halt and escalate to architect for versioning decision.
+
 gates:
   boundary_genericness:
     description: Prevent solution-specific leakage into generic framework agents. Embedded denylist is authoritative; --glossary override is optional.
@@ -41,3 +74,13 @@ gates:
     command:
       - python3
       - agents/scripts/run-skill-regression.py
+  data_contract_validation:
+    description: Validate data contracts are versioned, schemas are registered in planning-mds/schemas/, and no unversioned breaking changes exist.
+    command:
+      - python3
+      - agents/data-engineer/scripts/validate-contracts.py
+  data_pipeline_validation:
+    description: Validate pipeline idempotency guards, data quality rule coverage, and lineage metadata capture.
+    command:
+      - python3
+      - agents/data-engineer/scripts/validate-pipelines.py

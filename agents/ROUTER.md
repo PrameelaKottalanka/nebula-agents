@@ -97,6 +97,17 @@ All paths relative to `agents/backend-developer/`.
 
 All paths relative to `agents/ai-engineer/`.
 
+## Data Engineer
+
+| Task | References to Load |
+|------|--------------------|
+| ETL/ELT pipeline design and implementation | `references/pipeline-patterns.md` |
+| Schema design, migrations, data modeling | `references/schema-evolution-guide.md` |
+| Data quality rules, validation checks | `references/data-quality-guide.md` |
+| Data contracts, schema evolution | `references/schema-evolution-guide.md` |
+
+All paths relative to `agents/data-engineer/`.
+
 ## Quality Engineer (577 lines → ~555 per task)
 
 | Task | References to Load |

@@ -50,6 +50,23 @@ cases:
     prompt: "Write a development blog post summarizing what changed and lessons learned."
     expected_skill: blogger
 
+  - id: data_pipeline
+    prompt: "Implement the ETL pipeline, database migration, and data contract for this reporting feature."
+    expected_skill: data-engineer
+    forbidden_skills:
+      - backend-developer
+      - devops
+
+  - id: data_schema
+    prompt: "Define the schema migration and data quality validation rules for the new orders table."
+    expected_skill: data-engineer
+    forbidden_skills:
+      - backend-developer
+
+  - id: data_contract
+    prompt: "Create a versioned data contract between the ingestion service and the analytics consumer."
+    expected_skill: data-engineer
+
 # Content assertions — each entry requires the listed skill's SKILL.md to
 # contain the given substring. Use to lock in cross-skill guidance that
 # regressions could quietly delete.
@@ -74,3 +91,18 @@ content_assertions:
     skill: code-reviewer
     must_contain: "Knowledge-Graph & Symbol-Index Sync"
     rationale: Symbol-index sync dimension added during KG Phase 1
+
+  - id: data_engineer_symbol_lookup_bullet
+    skill: data-engineer
+    must_contain: "lookup.py --symbol"
+    rationale: Symbol-layer routing aid required in all implementation-phase agents
+
+  - id: data_engineer_idempotency_principle
+    skill: data-engineer
+    must_contain: "Idempotent Pipelines"
+    rationale: Core data-engineer principle — locks in idempotency as a non-negotiable
+
+  - id: data_engineer_boundary_guard
+    skill: data-engineer
+    must_contain: "data layer"
+    rationale: Boundary language must remain present to prevent scope creep into backend/devops

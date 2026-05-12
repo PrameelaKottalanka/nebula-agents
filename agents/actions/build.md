@@ -99,6 +99,15 @@ All stack-specific execution (compile/tests/scans) must run in application runti
 - [ ] Story changes files under `{PRODUCT_ROOT}/neuron/`
 - [ ] Story requires model selection, cost controls, or guardrails
 
+**Data Scope Checklist — include Data Engineer if ANY apply:**
+- [ ] Story requires new tables, schema changes, column additions, or index changes
+- [ ] Story requires ETL/ELT pipeline creation or modification
+- [ ] Story introduces or modifies cross-service data contracts
+- [ ] Story involves reporting, analytics, or data warehouse output
+- [ ] Story requires AI/ML training data preparation or feature store feeds
+- [ ] Story involves event sourcing or CQRS data patterns
+- [ ] Story requires bulk data import or export
+
 #### 1a. Backend Developer
 1. **Activate Backend Developer agent** by reading `agents/backend-developer/SKILL.md`
 2. **Read context:**
@@ -279,8 +288,36 @@ All stack-specific execution (compile/tests/scans) must run in application runti
    - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/STATUS.md` updates (AI Progress section, validation evidence)
    - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/GETTING-STARTED.md` updates (AI runtime / setup notes)
 
+#### 1f. Data Engineer (if data scope)
+1. **Activate Data Engineer agent** by reading `agents/data-engineer/SKILL.md`
+2. **Read context:**
+   - `{PRODUCT_ROOT}/planning-mds/BLUEPRINT.md` Section 4 (data model, tech stack)
+   - `{PRODUCT_ROOT}/planning-mds/architecture/data-model.md`
+   - `{PRODUCT_ROOT}/planning-mds/architecture/SOLUTION-PATTERNS.md`
+   - `{PRODUCT_ROOT}/planning-mds/features/` (user stories in data scope)
+3. **Execute responsibilities:**
+   - Implement schema changes and generate migration files per architecture data model
+   - Define and version data contracts for cross-service data interfaces
+   - Implement ETL/ELT pipeline steps with explicit idempotency guards
+   - Implement data quality validation rules per acceptance criteria
+   - Write seed data scripts and test data factories
+   - Capture lineage metadata for all pipeline runs
+4. **Follow SOLUTION-PATTERNS.md:**
+   - Every migration must apply idempotently; never edit an applied migration
+   - Every pipeline step must be re-runnable without producing duplicates
+   - Breaking contract changes require versioning and architect approval
+   - No hardcoded credentials or connection strings
+5. **Outputs:**
+   - Migration files in `{PRODUCT_ROOT}/<data-layer>/migrations/`
+   - Schema contracts in `{PRODUCT_ROOT}/planning-mds/schemas/`
+   - Pipeline definitions in `{PRODUCT_ROOT}/<data-layer>/pipelines/`
+   - Seed scripts and test data factories
+   - Data quality rule implementations
+   - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/STATUS.md` updates (Data Progress section, validation evidence paths)
+   - `{PRODUCT_ROOT}/planning-mds/features/F{NNNN}-{slug}/GETTING-STARTED.md` updates (key data files, seed/run verification steps)
+
 **Completion Criteria for Step 1:**
-- [ ] All required agents have completed their work (Backend, Frontend, Quality, DevOps, and AI Engineer if AI scope)
+- [ ] All required agents have completed their work (Backend, Frontend, Quality, DevOps, AI Engineer if AI scope, and Data Engineer if data scope)
 - [ ] Code compiles/builds successfully in application runtime containers
 - [ ] No critical errors or blockers
 
@@ -339,6 +376,18 @@ Each agent validates their own work before proceeding to code review:
    - [ ] Cost/safety/observability controls implemented
    - [ ] No hardcoded API keys or secrets
 
+6. **Data Engineer self-review (if data scope):**
+   - [ ] Schemas match architecture data model (field names, types, constraints)
+   - [ ] All migrations apply idempotently against a clean baseline
+   - [ ] Pipeline steps are idempotent and re-runnable
+   - [ ] Data contracts versioned; breaking changes flagged and architect-approved
+   - [ ] Data quality rules implemented per acceptance criteria; tested with valid and invalid samples
+   - [ ] Lineage metadata captured for all pipeline runs
+   - [ ] Seed scripts re-run safely without creating duplicates
+   - [ ] Pipeline unit tests passing
+   - [ ] No hardcoded credentials or connection strings
+   - [ ] code-index.yaml bindings added for new data files
+
 **If any self-review fails:**
 - Agent fixes issues
 - Re-runs self-review
@@ -349,6 +398,7 @@ Each agent validates their own work before proceeding to code review:
 - [ ] All required agents pass self-review
 - [ ] All tests passing in application runtime containers
 - [ ] Application runtime services start and run successfully
+- [ ] Data Engineer self-review passes when data scope exists (migrations idempotent, contracts versioned, pipelines re-runnable)
 
 ---
 
@@ -1032,6 +1082,12 @@ Implementation (Parallel):
     - [count] MCP tools/resources added
     - [count] AI tests passing
 
+  ✓ Data Engineer (if data scope)
+    - [count] migrations generated and validated
+    - [count] data contracts defined/versioned
+    - [count] pipeline steps implemented
+    - Pipeline unit tests passing
+
 Code Review:
   ✓ Code Reviewer: APPROVED
   ✓ Pattern compliance verified
@@ -1068,9 +1124,10 @@ All features implemented and approved! ✓
 
 **Overall Build Action Success:**
 - [ ] Application assembly plan created and followed
-- [ ] All required implementation agents completed work (including AI Engineer when AI scope exists)
+- [ ] All required implementation agents completed work (including AI Engineer when AI scope exists, and Data Engineer when data scope exists)
 - [ ] All tests passing (unit, integration, E2E) in application runtime containers
 - [ ] AI tests passing (if AI scope) in AI runtime container
+- [ ] Data pipeline unit tests passing and migrations validated (if data scope)
 - [ ] Code review approved
 - [ ] Security review approved
 - [ ] Signoff gate passed for all required reviewer roles

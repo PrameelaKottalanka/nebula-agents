@@ -90,6 +90,29 @@ agents:
       - {PRODUCT_ROOT}/planning-mds/features/**/STATUS.md          # frontend progress, validation evidence
       - {PRODUCT_ROOT}/planning-mds/features/**/GETTING-STARTED.md  # key files, verification steps
 
+  data-engineer:
+    skill: agents/data-engineer/SKILL.md
+    condition: scope includes schema changes, data pipelines, data contracts, analytics, bulk import/export, or event sourcing
+    reads:
+      - {PRODUCT_ROOT}/planning-mds/BLUEPRINT.md
+      - {PRODUCT_ROOT}/planning-mds/architecture/data-model.md
+      - {PRODUCT_ROOT}/planning-mds/architecture/SOLUTION-PATTERNS.md
+      - {PRODUCT_ROOT}/planning-mds/knowledge-graph/**
+      - {PRODUCT_ROOT}/planning-mds/schemas/**
+      - {PRODUCT_ROOT}/planning-mds/api/*.yaml
+      - {PRODUCT_ROOT}/planning-mds/features/**
+      - agents/data-engineer/references/**
+    writes:
+      - {PRODUCT_ROOT}/<data-layer>/migrations/**
+      - {PRODUCT_ROOT}/<data-layer>/pipelines/**
+      - {PRODUCT_ROOT}/<data-layer>/seeds/**
+      - {PRODUCT_ROOT}/<data-layer>/quality/**
+      - {PRODUCT_ROOT}/<data-layer>/lineage/**
+      - {PRODUCT_ROOT}/<data-layer>/tests/**
+      - {PRODUCT_ROOT}/planning-mds/schemas/**              # data contract definitions
+      - {PRODUCT_ROOT}/planning-mds/features/**/STATUS.md   # data progress, validation evidence
+      - {PRODUCT_ROOT}/planning-mds/features/**/GETTING-STARTED.md # key data files, seed/run verification steps
+
   ai-engineer:
     skill: agents/ai-engineer/SKILL.md
     condition: scope includes AI, LLM, MCP, or {PRODUCT_ROOT}/neuron/
@@ -256,6 +279,7 @@ actions:
           - backend-developer
           - frontend-developer
           - ai-engineer              # conditional — see agent definition
+          - data-engineer            # conditional — see agent definition
           - quality-engineer
           - devops
       - gate: self-review
@@ -286,6 +310,7 @@ actions:
           - backend-developer
           - frontend-developer
           - ai-engineer              # conditional — see agent definition
+          - data-engineer            # conditional — see agent definition
           - quality-engineer
           - devops
       - gate: self-review
@@ -293,6 +318,7 @@ actions:
       - parallel:
           - code-reviewer
           - security
+          - data-engineer            # conditional — review role for data scope
       - gate: approval
         name: feature-review
       - gate: signoff
@@ -304,12 +330,13 @@ actions:
 
   review:
     doc: agents/actions/review.md
-    description: Code quality + security review with approval gate
+    description: Code quality + security + data review with approval gate
     prerequisites: [implementation completed, tests passing]
     steps:
       - parallel:
           - code-reviewer
           - security
+          - data-engineer            # conditional — see agent definition
       - gate: approval
         name: review-approval
 

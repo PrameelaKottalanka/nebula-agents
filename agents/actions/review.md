@@ -267,8 +267,78 @@ Execute these review agents **in parallel**:
    - Compliance checklist
    - Save report under `{PRODUCT_ROOT}/planning-mds/security/reviews/` (for example: `security-review-YYYY-MM-DD.md`)
 
+#### 1c. Data Engineer Reviewer (if data scope)
+1. **Activate Data Engineer agent** by reading `agents/data-engineer/SKILL.md`
+
+2. **Read context:**
+   - Migration files and schema contracts changed in scope
+   - Pipeline definitions changed in scope
+   - Application runtime validation outputs (migration test results, pipeline test reports)
+   - `{PRODUCT_ROOT}/planning-mds/BLUEPRINT.md` (data model, tech stack)
+   - `{PRODUCT_ROOT}/planning-mds/architecture/data-model.md`
+   - `{PRODUCT_ROOT}/planning-mds/architecture/SOLUTION-PATTERNS.md`
+   - `{PRODUCT_ROOT}/planning-mds/schemas/` (registered data contracts)
+   - User stories with data acceptance criteria
+
+3. **Execute data review (data-scope-focused):**
+   - Verify migrations are sequenced correctly and apply idempotently
+   - Verify no applied migration has been retroactively edited
+   - Confirm data contracts are versioned; flag any unversioned breaking changes
+   - Confirm pipeline steps have explicit idempotency guards
+   - Confirm data quality rules match acceptance criteria
+   - Confirm lineage metadata is captured for pipeline runs
+   - Verify no hardcoded credentials or connection strings in data files
+   - Verify code-index.yaml bindings exist for all new data files
+
+4. **Produce data review report:**
+   ```markdown
+   # Data Review Report
+
+   Scope: [Specific feature / PR / Full codebase]
+   Date: [Date]
+
+   ## Summary
+   - Assessment: [APPROVED / APPROVED WITH RECOMMENDATIONS / REJECTED]
+   - Files reviewed: [count]
+   - Issues found: [count by severity]
+
+   ## Migration Safety
+   - [ ] Migrations sequenced correctly
+   - [ ] No applied migration edited retroactively
+   - [ ] Rollback path available (if supported by framework)
+
+   ## Data Contract Compliance
+   - [ ] All cross-service interfaces have versioned contract files
+   - [ ] No unversioned breaking changes
+   - [ ] Producer and consumer reference the same contract version
+
+   ## Pipeline Correctness
+   - [ ] All pipeline steps have idempotency guards
+   - [ ] Error handling and dead-letter routing present
+   - [ ] Lineage metadata captured
+
+   ## Data Quality
+   - [ ] Quality rules match acceptance criteria
+   - [ ] Quality tests cover valid and invalid samples
+
+   ## Findings
+   - Critical: [list]
+   - High: [list]
+   - Medium: [list]
+   - Low: [list]
+
+   ## Recommendation
+   [APPROVE / REQUEST CHANGES / REJECT]
+   ```
+
+5. **Outputs:**
+   - Data review report
+   - Findings with severity and remediation guidance
+
 **Completion Criteria for Step 1:**
-- [ ] Both reviews completed
+- [ ] Code quality review completed
+- [ ] Security review completed
+- [ ] Data review completed (if data scope)
 - [ ] Reports generated
 
 ---
@@ -331,19 +401,43 @@ Execute these review agents **in parallel**:
      - Timeline events: [Yes/No]
      - Secrets management: [Secure/Issues found]
 
+   DATA REVIEW (if data scope)
+   ─────────────────────────────────────────────────────────
+   Reviewer: Data Engineer Agent
+   Status: [APPROVED / APPROVED WITH RECOMMENDATIONS / REJECTED]
+
+   Data Findings Found:
+     - Critical: [count]
+     - High: [count]
+     - Medium: [count]
+     - Low: [count]
+
+   ✓ Migration Safety
+     - Sequencing: [Correct/Issues found]
+     - Idempotency: [Verified/Issues found]
+
+   ✓ Contract Compliance
+     - Versioning: [Compliant/Issues found]
+     - Breaking changes: [None/Flagged]
+
+   ✓ Pipeline Correctness
+     - Idempotency guards: [Present/Missing]
+     - Lineage capture: [Present/Missing]
+
    ═══════════════════════════════════════════════════════════
    Detailed Reports:
    - Code Quality Review: [link/location]
    - Security Review: [link/location]
+   - Data Review: [link/location] (if data scope)
    ═══════════════════════════════════════════════════════════
    ```
 
 2. **Compute gate state from combined findings:**
    ```
-   total_critical = code_critical + security_critical
-   total_high = code_high + security_high
-   total_medium = code_medium + security_medium
-   total_low = code_low + security_low
+   total_critical = code_critical + security_critical + data_critical
+   total_high = code_high + security_high + data_high
+   total_medium = code_medium + security_medium + data_medium
+   total_low = code_low + security_low + data_low
 
    IF required_runtime_evidence_missing:
      STATUS: ❌ BLOCKED
@@ -371,6 +465,7 @@ Execute these review agents **in parallel**:
    Review Approval Checklist:
    - [ ] No critical code quality issues
    - [ ] No critical security vulnerabilities
+   - [ ] No critical data review findings (if data scope)
    - [ ] High-severity issues fixed OR approved with mitigation justification
    - [ ] OWASP Top 10 compliance acceptable
    - [ ] SOLUTION-PATTERNS.md followed
@@ -378,6 +473,8 @@ Execute these review agents **in parallel**:
    - [ ] Coverage/test evidence includes artifact paths and any layer exceptions are justified
    - [ ] Authorization correctly implemented
    - [ ] Audit logging complete
+   - [ ] Migration safety verified (if data scope)
+   - [ ] Data contracts versioned with no unversioned breaking changes (if data scope)
    ```
 
 4. **Present gate options by state:**
@@ -534,6 +631,7 @@ Issues identified. Fix and re-review.
 **Overall Review Action Success:**
 - [ ] Code quality review completed
 - [ ] Security review completed
+- [ ] Data review completed (if data scope)
 - [ ] User reviewed findings
 - [ ] User made explicit decision
 - [ ] If approved: No critical issues remain
