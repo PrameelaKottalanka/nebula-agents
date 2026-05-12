@@ -29,8 +29,8 @@ CONTEXT LOADING ORDER (navigate; do not eager-load):
 10. {PRODUCT_ROOT}/planning-mds/security/                            (Step 1b — threat model if present)
 
 OUTPUTS:
-- Code quality review report                                                                    (Step 1a)
-- Security review report → {PRODUCT_ROOT}/planning-mds/security/reviews/security-review-{date}.md   (Step 1b)
+- Code quality review report → {PRODUCT_ROOT}/planning-mds/operations/evidence/code-review-{date}.md   (Step 1a)
+- Security review report → {PRODUCT_ROOT}/planning-mds/security/reviews/security-review-{date}.md       (Step 1b)
 
 GATES (sequential, all mandatory):
 G1    PARALLEL REVIEWS — both code-reviewer and security reviews completed; reports generated with severity counts
@@ -55,6 +55,7 @@ STOP CONDITIONS:
 - Scope drifts outside declared SCOPE
 
 EXIT VALIDATION (run in order; all exit 0):
+- Code review report saved under {PRODUCT_ROOT}/planning-mds/operations/evidence/
 - Security report saved under {PRODUCT_ROOT}/planning-mds/security/reviews/
 - python3 agents/scripts/validate_templates.py
 

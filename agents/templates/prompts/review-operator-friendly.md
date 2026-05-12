@@ -15,7 +15,7 @@ Load context in this order and navigate instead of eager-loading:
 8. `agents/frontend-developer/references/ux-audit-ruleset.md` (Step 1a — when UI code changed)
 9. `{PRODUCT_ROOT}/planning-mds/security/` (Step 1b — threat model if present)
 
-Run Step 1 with both agents in parallel. The code reviewer checks SOLID principles, clean architecture boundaries, test coverage, acceptance criteria mapping, naming conventions, error handling, SOLUTION-PATTERNS.md compliance, and UX rule-set compliance when UI code changed. The security reviewer runs the full OWASP Top 10 scan, authorization review, secrets management check, audit logging validation, and dependency vulnerability assessment. The security report must be saved under `{PRODUCT_ROOT}/planning-mds/security/reviews/security-review-{date}.md`.
+Run Step 1 with both agents in parallel. The code reviewer checks SOLID principles, clean architecture boundaries, test coverage, acceptance criteria mapping, naming conventions, error handling, SOLUTION-PATTERNS.md compliance, and UX rule-set compliance when UI code changed. The security reviewer runs the full OWASP Top 10 scan, authorization review, secrets management check, audit logging validation, and dependency vulnerability assessment. The code quality review report must be saved under `{PRODUCT_ROOT}/planning-mds/operations/evidence/code-review-{date}.md`. The security report must be saved under `{PRODUCT_ROOT}/planning-mds/security/reviews/security-review-{date}.md`.
 
 After both reviews complete (G1), compute combined severity counts across both reports and present the approval gate (G2). Gate state is determined as follows: if required runtime evidence is missing, status is BLOCKED — offer generate-evidence or reject, not approve. If combined critical count is greater than zero, status is BLOCKED — offer fix-critical or reject, not approve. If combined high count is greater than zero, status is WARNING — offer fix-all-high, approve-with-justification, or reject. If combined critical and high are both zero, status is ACCEPTABLE — offer approve, fix-issues-anyway, or reject.
 
@@ -26,6 +26,7 @@ Don't proceed past G2 without an explicit user decision token. Don't approve whe
 Stop immediately if a critical finding persists after one full review cycle, if required runtime evidence cannot be generated from application runtime containers, or if scope drifts outside the declared scope.
 
 Close the run by executing these in order:
+- `Confirm code review report saved under {PRODUCT_ROOT}/planning-mds/operations/evidence/`
 - `Confirm security report saved under {PRODUCT_ROOT}/planning-mds/security/reviews/`
 - `python3 agents/scripts/validate_templates.py`
 
